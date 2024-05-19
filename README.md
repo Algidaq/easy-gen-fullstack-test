@@ -50,45 +50,46 @@ This project implements a user authentication module allowing users to sign up a
 
 1. Clone the repository:
 
-   ```bash
+```bash
    git clone git@github.com:Algidaq/easy-gen-fullstack-test.git
-   ```
+```
 
 2. Create .env file inside bakcned folder add following envs to project 
 
-    ```bash 
+ ```bash 
             PORT=3001
             JWT_SECRET=SECRET
             NODE_ENV=production | development
             DB_URL=mongodb://username:password@host:port/database
-    ```
+```
 
 3. If you don't have mongodb installed in your system, makesure you have  docker installed and run the following in backend folder: 
 
-    ```bash 
+```bash 
         docker compose -f docker-compose.yaml up -d
-     ```
+ ```
 
 4. install deps then run development server :
-    ```bash 
+
+ ```bash 
         npm i --save && npm run start:dev
-    ```
+ ```
 
 
 5. In fronted project install deps: 
 
-    ```bash 
+ ```bash 
         npm i --save
-    ```
+ ```
 
 6. create env file from the following sample:
 
-  ```bash 
+```bash 
          VITE_BASE_URL = http://localhost:port/api
-    ```
+```
 
 7. start fronted project: 
 
-    ```bash 
+```bash 
         npm run dev
-    ```
+```
