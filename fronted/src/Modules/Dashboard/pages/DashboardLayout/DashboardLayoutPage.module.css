@@ -1,0 +1,16 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.sideNav {
+  background-color: #333333;
+  width: 200px;
+  border-right-style: 1px solid #111111;
+}
+
+.content {
+  flex: 1;
+}

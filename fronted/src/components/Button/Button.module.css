@@ -1,0 +1,21 @@
+.formButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  background-color: #111111;
+  padding: 14px 0px;
+  min-width: 168px;
+  height: 64px;
+  border-radius: 16px;
+  color: #ffffff;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 33px;
+  cursor: pointer;
+}
+
+.formButton:disabled {
+  background-color: #333333;
+  cursor: auto;
+}
