@@ -1,8 +1,13 @@
 import { useReducer, ChangeEvent } from 'react';
 import { z } from 'zod';
-import { useAuthServiceCtx, IAuthError } from '../../services';
+import {
+  useAuthServiceCtx,
+  IAuthError,
+  AuthInvalidLoginCredentialError,
+} from '../../services';
 
 import DashboardModule from '../../../Dashboard';
+import { toast } from 'react-toastify';
 
 const kLoginSchema = z.object({
   email: z
@@ -106,6 +111,12 @@ export const useLoginPageState = () => {
 
     if (data instanceof IAuthError) {
       //todo show error toast
+      let message = 'An Error Occurred';
+
+      if (data instanceof AuthInvalidLoginCredentialError)
+        message = 'Invaild login credentials';
+
+      toast.error(message);
       return;
     }
 

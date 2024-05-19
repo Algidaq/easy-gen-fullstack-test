@@ -1,23 +1,25 @@
 import { useReducer, ChangeEvent } from 'react';
 import { z } from 'zod';
-import { useAuthServiceCtx, IAuthError } from '../../services';
+import {
+  useAuthServiceCtx,
+  IAuthError,
+  AuthUserAlreadyExistsError,
+} from '../../services';
 import DashboardModule from '../../../Dashboard';
+import { toast } from 'react-toastify';
 
-const kSignupSchema = z
-  .object({
-    name: z.string({ required_error: 'name field is required' }).min(3),
-    email: z
-      .string({ required_error: 'email field is required' })
-      .email({ message: 'Invalid Email' }),
-    password: z
-      .string({ required_error: 'password filed is required' })
-      .min(8, { message: 'Password min length is 8' }),
-    confirmPass: z.string({ required_error: 'password filed is required' }),
-  })
-  .refine((arg) => arg.password === arg.confirmPass, {
-    message: `Password dosn't match`,
-    path: ['confirmPass'],
-  });
+const kSignupSchema = z.object({
+  name: z.string({ required_error: 'name field is required' }).min(3),
+  email: z
+    .string({ required_error: 'email field is required' })
+    .email({ message: 'Invalid Email' }),
+  password: z
+    .string({ required_error: 'password filed is required' })
+    .min(8, { message: 'Password min length is 8' })
+    .regex(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/, {
+      message: 'Week password',
+    }),
+});
 
 type SignupForm = z.infer<typeof kSignupSchema>;
 
@@ -30,7 +32,6 @@ type ISignupActions =
   | { type: 'update_name'; payload: Pick<ISignupState, 'name'> }
   | { type: 'update_email'; payload: Pick<ISignupState, 'email'> }
   | { type: 'update_password'; payload: Pick<ISignupState, 'password'> }
-  | { type: 'update_confirmPass'; payload: Pick<ISignupState, 'confirmPass'> }
   | { type: 'update_form_error'; payload: Pick<ISignupState, 'formError'> }
   | { type: 'update_login'; payload: Pick<ISignupState, 'btnState'> };
 
@@ -38,7 +39,7 @@ const kInitialState: ISignupState = {
   name: '',
   email: '',
   password: '',
-  confirmPass: '',
+
   btnState: 'idel',
   formError: null,
 };
@@ -54,8 +55,7 @@ function loginReducer(
       return { ...state, email: action.payload.email };
     case 'update_password':
       return { ...state, password: action.payload.password };
-    case 'update_confirmPass':
-      return { ...state, confirmPass: action.payload.confirmPass };
+
     case 'update_form_error':
       return { ...state, formError: action.payload.formError };
     case 'update_login':
@@ -72,7 +72,6 @@ function validateSignupform(form: SignupForm): Partial<SignupForm> | null {
     name: result.error.formErrors.fieldErrors.name?.[0],
     email: result.error.formErrors.fieldErrors.email?.[0],
     password: result.error.formErrors.fieldErrors.password?.[0],
-    confirmPass: result.error.formErrors.fieldErrors.confirmPass?.[0],
   };
 }
 const kSignupActionsMap: Record<
@@ -87,10 +86,6 @@ const kSignupActionsMap: Record<
   password: (value: string) => ({
     type: 'update_password',
     payload: { password: value },
-  }),
-  confirmPass: (value: string) => ({
-    type: 'update_confirmPass',
-    payload: { confirmPass: value },
   }),
 };
 
@@ -133,8 +128,11 @@ export const useSignupPageState = () => {
     dispatch({ type: 'update_login', payload: { btnState: 'idel' } });
 
     if (data instanceof IAuthError) {
-      //todo show error toast
-      console.info('error', data);
+      let message = 'An Error Occured';
+      if (data instanceof AuthUserAlreadyExistsError) {
+        message = 'User with the given email already exists';
+      }
+      toast.error(message);
       return;
     }
 

@@ -22,7 +22,10 @@ export class AuthService implements IAuthService {
 
       return { accessToken: data.accessToken };
     } catch (e) {
-      if (axios.isAxiosError(e) && e.status === HttpStatusCode.Unauthorized) {
+      if (
+        axios.isAxiosError(e) &&
+        e.response?.status === HttpStatusCode.Unauthorized
+      ) {
         return new AuthInvalidLoginCredentialError();
       }
 
@@ -47,7 +50,8 @@ export class AuthService implements IAuthService {
       return { accessToken: data.accessToken };
     } catch (e) {
       if (axios.isAxiosError(e)) {
-        if (e.status === HttpStatusCode.Conflict)
+        console.info('status', e.response?.status);
+        if (e.response?.status === HttpStatusCode.Conflict)
           return new AuthUserAlreadyExistsError();
       }
 

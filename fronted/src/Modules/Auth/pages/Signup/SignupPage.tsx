@@ -69,20 +69,45 @@ const SignupForm: React.FC = () => {
           />
           <InputErrorMessage message={state.formError?.password} />
         </InputContainer>
-        <InputContainer>
-          <InputLabel>Password</InputLabel>
-          <Input
-            fullWidth
-            type="password"
-            name="confirmPass"
-            id="confirmPass"
-            placeholder="Confirm Password"
-            onChange={actions.handleOnInputChange}
+        <div>
+          <PasswordValidationText
+            text="Use 8 or more characters"
+            valid={state.password.length >= 8}
           />
-          <InputErrorMessage message={state.formError?.confirmPass} />
-        </InputContainer>
+          <PasswordValidationText
+            text="One Uppercase character"
+            valid={/(?=.*?[A-Z])/.test(state.password)}
+          />
+          <PasswordValidationText
+            text="One lowercase character"
+            valid={/(?=.*?[a-z])/.test(state.password)}
+          />
+          <PasswordValidationText
+            text="One special character"
+            valid={/(?=.*?[#?!@$%^&*-])/.test(state.password)}
+          />
+          <PasswordValidationText
+            text="One number"
+            valid={/(?=.*?[0-9])/.test(state.password)}
+          />
+        </div>
+
         <Button type="submit" text="Sign up" busy={state.btnState === 'busy'} />
       </form>
+    </div>
+  );
+};
+
+const PasswordValidationText: React.FC<{ text: string; valid?: boolean }> = (
+  props
+) => {
+  const validClass = props.valid ? styles.passValid : styles.passInvalid;
+  return (
+    <div className={styles.passValidationTextContainer}>
+      <div className={[styles.passDot, validClass].join(' ')} />
+      <p className={[styles.passValidationText, validClass].join(' ')}>
+        {props.text}
+      </p>
     </div>
   );
 };
