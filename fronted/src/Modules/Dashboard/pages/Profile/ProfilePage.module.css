@@ -1,0 +1,16 @@
+.profileContainer {
+  padding: 88px;
+  width: 100%;
+  height: 100%;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 556px;
+}
+
+.userInfo > button {
+  max-width: 300px;
+}
