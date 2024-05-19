@@ -12,7 +12,7 @@ export const kCreateUserSchema = z.object({
   password: z
     .string({ required_error: 'password field is required' })
     .min(8)
-    .regex(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, {
+    .regex(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/, {
       message: 'Week password',
     }),
 });
